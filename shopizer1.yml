@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - apt:
+      name: oracle-java8-installer
+      state: present
+      update_cache: yes
+  - apt:
+      name: tomcat8
+      state: present
+      update_cache: yes
+    notify:
+    - restart tomcat8
+  - copy:
+      src: /home/ansible/shopizer/sm-shop/target/ROOT.war
+      dest: /var/lib/tomcat8/webapps
+    notify:
+    - restart tomcat8
+  handlers:
+  - name: restart tomcat8
+    service:
+      name: tomcat8
+      state: restarted
+
